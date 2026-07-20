@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>RAUM‑VERIFY · 360° Scan</title>
+
+<style>
+body { background:#000; color:#0ff; font-family:Consolas; padding:20px; }
+h1 { color:#6cf; }
+h2 { color:#0f0; margin-top:30px; }
+pre { background:#111; padding:12px; border:1px solid #333; border-radius:6px; }
+.box { background:#111; padding:10px; border-radius:6px; margin:10px 0; }
+.scan { color:#6cf; }
+.myst { color:#f0f; }
+.zero { color:#f90; }
+.axis { color:#0f0; }
+</style>
+
+<script>
+async function loadRespo() {
+    const r = await fetch("RAUM-SCAN.respo");
+    return r.ok ? await r.text() : "FEHLT";
+}
+
+function parseRespo(text) {
+    const lines = text.split("\n");
+    const data = {};
+
+    for (const line of lines) {
+        if (!line.includes("=")) continue;
+        const [key, val] = line.split("=").map(s => s.trim());
+        data[key] = val;
+    }
+    return data;
+}
+
+function render(data) {
+    // Stimmung
+    document.getElementById("stimmung").textContent =
+        data["STIMMUNG-0"] + ", " +
+        data["STIMMUNG-1"] + ", " +
+        data["STIMMUNG-2"] + ", " +
+        data["STIMMUNG-3"] + ", " +
+        data["STIMMUNG-4"] + ", " +
+        data["STIMMUNG-5"];
+
+    // Achsen
+    document.getElementById("achsen").textContent =
+        data["AXIS-X"] + " / " +
+        data["AXIS-Y"] + " / " +
+        data["AXIS-Z"] + " / " +
+        data["AXIS-U"] + " / " +
+        data["AXIS-V"] + " / " +
+        data["AXIS-W"];
+
+    // Operatoren
+    document.getElementById("ops").textContent =
+        "h1=" + data["OP-h1"] + ", " +
+        "e3=" + data["OP-e3"] + ", " +
+        "o6=" + data["OP-o6"] + ", " +
+        "o9=" + data["OP-o9"] + ", " +
+        "b12=" + data["OP-b12"] + ", " +
+        "w128=" + data["OP-w128"] + ", " +
+        "win∞=" + data["OP-win∞"];
+
+    // Mystery
+    document.getElementById("mystery").textContent =
+        data["MYSTERY-ROOT"] + ", " +
+        data["MYSTERY-GHOST"] + ", " +
+        data["MYSTERY-SINN"] + ", " +
+        data["MYSTERY-BEAT"] + ", " +
+        data["MYSTERY-REV"] + ", " +
+        data["MYSTERY-WIN"];
+
+    // Fusion
+    document.getElementById("fusion").textContent = data["FUSION"];
+
+    // Zero
+    document.getElementById("zero").textContent =
+        data["ZERO-CORE"] + " / " +
+        data["ZERO-ULTRA"] + " / " +
+        data["ZERO-ROOM"];
+
+    // Pools
+    document.getElementById("scanpool").textContent =
+        data["SCAN-1"] + ", " +
+        data["SCAN-3"] + ", " +
+        data["SCAN-6"] + ", " +
+        data["SCAN-9"] + ", " +
+        data["SCAN-12"];
+
+    document.getElementById("metapool").textContent =
+        data["META-H"] + ", " +
+        data["META-B"] + ", " +
+        data["META-T"] + ", " +
+        data["META-360"] + ", " +
+        data["META-2"] + ", " +
+        data["META-3"];
+
+    document.getElementById("rawpool").textContent =
+        data["RAW-ROOM"] + ", " +
+        data["RAW-HTML"] + ", " +
+        data["RAW-NC3"] + ", " +
+        data["RAW-NC6"] + ", " +
+        data["RAW-NC9"];
+
+    // Status
+    document.getElementById("status").textContent =
+        "Power=" + data["STATUS-POWER"] +
+        " | View=" + data["STATUS-VIEW"] +
+        " | Mystery=" + data["STATUS-MYST"] +
+        " | Room=" + data["STATUS-ROOM"] +
+        " | RAUM=" + data["STATUS-RAUM"] +
+        " | Scan=" + data["STATUS-SCAN"];
+}
+
+async function start() {
+    const text = await loadRespo();
+    const data = parseRespo(text);
+    render(data);
+}
+</script>
+</head>
+
+<body onload="start()">
+
+<h1>RAUM‑VERIFY · 360° Scan</h1>
+
+<h2>Stimmung (360°)</h2>
+<pre id="stimmung" class="scan">Lade…</pre>
+
+<h2>Achsen</h2>
+<pre id="achsen" class="axis">Lade…</pre>
+
+<h2>Operatoren</h2>
+<pre id="ops" class="scan">Lade…</pre>
+
+<h2>Mystery‑Layer</h2>
+<pre id="mystery" class="myst">Lade…</pre>
+
+<h2>Fusion</h2>
+<pre id="fusion" class="myst">Lade…</pre>
+
+<h2>Zero‑System</h2>
+<pre id="zero" class="zero">Lade…</pre>
+
+<h2>Scan‑Pool</h2>
+<pre id="scanpool" class="scan">Lade…</pre>
+
+<h2>Meta‑Pool</h2>
+<pre id="metapool" class="scan">Lade…</pre>
+
+<h2>RAW‑Pool</h2>
+<pre id="rawpool" class="scan">Lade…</pre>
+
+<h2>Status</h2>
+<pre id="status" class="scan">Lade…</pre>
+
+</body>
+</html>
