@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>RAUM‑INDEX · Mystery · 360°</title>
+
+<style>
+body { background:#000; color:#0ff; font-family:Consolas; padding:20px; }
+h1 { color:#6cf; }
+h2 { color:#0f0; margin-top:30px; }
+pre { background:#111; padding:12px; border:1px solid #333; border-radius:6px; }
+nav a { color:#6cf; display:block; margin:6px 0; }
+.box { background:#111; padding:10px; border-radius:6px; margin:10px 0; }
+.myst { color:#f0f; }
+.zero { color:#f90; }
+.axis { color:#0f0; }
+.scan { color:#6cf; }
+</style>
+
+<script>
+async function loadRespo() {
+    const r = await fetch("RAUM-SCAN.respo");
+    return r.ok ? await r.text() : "FEHLT";
+}
+
+function parseRespo(text) {
+    const lines = text.split("\n");
+    const data = {};
+    for (const line of lines) {
+        if (!line.includes("=")) continue;
+        const [key, val] = line.split("=").map(s => s.trim());
+        data[key] = val;
+    }
+    return data;
+}
+
+function render(data) {
+    document.getElementById("stimmung").textContent =
+        data["STIMMUNG-0"] + ", " +
+        data["STIMMUNG-1"] + ", " +
+        data["STIMMUNG-2"] + ", " +
+        data["STIMMUNG-3"] + ", " +
+        data["STIMMUNG-4"] + ", " +
+        data["STIMMUNG-5"];
+
+    document.getElementById("fusion").textContent = data["FUSION"];
+
+    document.getElementById("ops").textContent =
+        "h1=" + data["OP-h1"] + ", " +
+        "e3=" + data["OP-e3"] + ", " +
+        "o6=" + data["OP-o6"] + ", " +
+        "o9=" + data["OP-o9"] + ", " +
+        "b12=" + data["OP-b12"] + ", " +
+        "w128=" + data["OP-w128"] + ", " +
+        "win∞=" + data["OP-win∞"];
+
+    document.getElementById("mystery").textContent =
+        data["MYSTERY-ROOT"] + ", " +
+        data["MYSTERY-GHOST"] + ", " +
+        data["MYSTERY-SINN"] + ", " +
+        data["MYSTERY-BEAT"] + ", " +
+        data["MYSTERY-REV"] + ", " +
+        data["MYSTERY-WIN"];
+
+    document.getElementById("zero").textContent =
+        data["ZERO-CORE"] + " / " +
+        data["ZERO-ULTRA"] + " / " +
+        data["ZERO-ROOM"];
+
+    document.getElementById("status").textContent =
+        "Power=" + data["STATUS-POWER"] +
+        " | View=" + data["STATUS-VIEW"] +
+        " | Mystery=" + data["STATUS-MYST"] +
+        " | Room=" + data["STATUS-ROOM"] +
+        " | RAUM=" + data["STATUS-RAUM"] +
+        " | Scan=" + data["STATUS-SCAN"];
+}
+
+async function start() {
+    const text = await loadRespo();
+    const data = parseRespo(text);
+    render(data);
+}
+</script>
+</head>
+
+<body onload="start()">
+
+<h1>RAUM‑INDEX · Mystery · 360°</h1>
+
+<nav>
+    <a href="./RAUM-verify.html">RAUM‑VERIFY · Scan</a>
+    <a href="./RAUM-fusion.html">Fusion‑Viewer</a>
+    <a href="./RAUM-zero.html">Zero‑System</a>
+    <a href="./RAUM-matrix.html">Matrix‑Viewer</a>
+    <a href="./RAUM-lage.html">Lage‑Viewer</a>
+    <a href="./RAUM-chain.html">Chain‑Viewer</a>
+    <a href="./RAUM-octa.html">OCTA³‑Viewer</a>
+    <a href="./RAUM-help.html">Ghost‑Error‑Viewer</a>
+</nav>
+
+<h2>360° Stimmung</h2>
+<pre id="stimmung" class="scan">Lade…</pre>
+
+<h2>Operator‑Kette</h2>
+<pre id="ops" class="scan">Lade…</pre>
+
+<h2>Mystery‑Layer</h2>
+<pre id="mystery" class="myst">Lade…</pre>
+
+<h2>Fusion</h2>
+<pre id="fusion" class="myst">Lade…</pre>
+
+<h2>Zero‑System</h2>
+<pre id="zero" class="zero">Lade…</pre>
+
+<h2>Status</h2>
+<pre id="status" class="scan">Lade…</pre>
+
+</body>
+</html>
